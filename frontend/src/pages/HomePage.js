@@ -4,7 +4,7 @@ import { Row, Col } from "react-bootstrap";
 
 // import products from "../products.js";
 import Product from "../components/Product.js";
-import { fetchProducts } from "../slices/productSlice.js";
+import { fetchProducts } from "../reducers/productReducers.js";
 import Loader from "../components/Loader.js";
 import Message from "../components/Message.js";
 
@@ -19,7 +19,7 @@ function HomePage() {
     products = [],
     loading,
     error,
-  } = useSelector((state) => state.products);
+  } = useSelector((state) => state.productList);
 
   return (
     <div>
@@ -27,7 +27,7 @@ function HomePage() {
       {loading ? (
         <Loader />
       ) : error ? (
-        <Message variant='danger'>{error}</Message>
+        <Message variant="danger">{error}</Message>
       ) : (
         <Row>
           {products.map((product) => (
