@@ -5,6 +5,8 @@ import { Row, Col, Image, ListGroup, Button, Card } from "react-bootstrap";
 
 import Rating from "../components/Rating.js";
 import { fetchProductById } from "../slices/productSlice.js";
+import Loader from "../components/Loader.js";
+import Message from "../components/Message.js";
 
 function ProductPage() {
   const dispatch = useDispatch();
@@ -24,9 +26,9 @@ function ProductPage() {
   return (
     <div>
       {loading ? (
-        <h2>Loading...</h2>
+        <Loader />
       ) : error ? (
-        <h3>{error}</h3>
+        <Message variant="danger">{error}</Message>
       ) : (
         <div>
           <Link to="/" className="btn btn-light my-3">
