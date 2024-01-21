@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Button, Card } from "react-bootstrap";
 
 import Rating from "../components/Rating.js";
-import { fetchProductById } from "../slices/productSlice.js";
+import { fetchProductById } from "../reducers/productReducers.js";
 import Loader from "../components/Loader.js";
 import Message from "../components/Message.js";
 
@@ -21,7 +21,7 @@ function ProductPage() {
     product = [],
     loading,
     error,
-  } = useSelector((state) => state.product);
+  } = useSelector((state) => state.productDetails);
 
   return (
     <div>

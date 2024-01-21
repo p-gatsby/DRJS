@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createReducer, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchProducts = createAsyncThunk(
@@ -15,15 +15,13 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
-const productListSlice = createSlice({
-  name: "products",
-  initialState: {
+export const productListReducer = createReducer(
+  {
     products: [],
     loading: false,
     error: "",
   },
-  reducers: {},
-  extraReducers: (builder) => {
+  (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
@@ -36,8 +34,8 @@ const productListSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-  },
-});
+  }
+);
 
 export const fetchProductById = createAsyncThunk(
   "/api/products/product_id",
@@ -52,15 +50,13 @@ export const fetchProductById = createAsyncThunk(
   }
 );
 
-const productSlice = createSlice({
-  name: "product",
-  initialState: {
+export const productDetailsReducer = createReducer(
+  {
     product: [],
     loading: false,
     error: "",
   },
-  reducers: {},
-  extraReducers: (builder) => {
+  (builder) => {
     builder
       .addCase(fetchProductById.pending, (state) => {
         state.loading = true;
@@ -73,9 +69,5 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-  },
-});
-
-export const productsListReducer = productListSlice.reducer;
-
-export const productReducer = productSlice.reducer;
+  }
+);
