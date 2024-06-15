@@ -26,7 +26,7 @@ Before you begin, ensure you have the following installed:
 
 ### Installation
 
-Clone the repository > Clinic-Source-Automation-App
+Clone the repository > DRJS
 
   ```bash
   git clone https://github.com/p-gatsby/DRJS.git
