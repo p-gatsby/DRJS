@@ -29,28 +29,48 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
 };
 
+export const removeFromCart = (id) => (dispatch, getState) => {
+  dispatch({
+    type: CART_REMOVE_ITEM,
+    payload: id,
+  });
+  
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems));
+};
+
 export const cartReducer = createReducer(
   {
     cartItems: cartItemsFromLocalStorage,
   },
   (builder) => {
-    builder.addCase(CART_ADD_ITEM, (state, action) => {
-      const item = action.payload;
-      const existItem = state.cartItems.find((p) => p.product === item.product);
+    builder
+      .addCase(CART_ADD_ITEM, (state, action) => {
+        const item = action.payload;
+        const existItem = state.cartItems.find(
+          (p) => p.product === item.product
+        );
 
-      if (existItem) {
+        if (existItem) {
+          return {
+            ...state,
+            cartItems: state.cartItems.map((p) =>
+              p.product === existItem.product ? item : p
+            ),
+          };
+        } else {
+          return {
+            ...state,
+            cartItems: [...state.cartItems, item],
+          };
+        }
+      })
+      .addCase(CART_REMOVE_ITEM, (state, action) => {
+        const item = action.payload;
+
         return {
           ...state,
-          cartItems: state.cartItems.map((p) =>
-            p.product === existItem.product ? item : p
-          ),
+          cartItems: state.cartItems.filter((p) => p.product !== item),
         };
-      } else {
-        return {
-          ...state,
-          cartItems: [...state.cartItems, item],
-        };
-      }
-    });
+      });
   }
 );
