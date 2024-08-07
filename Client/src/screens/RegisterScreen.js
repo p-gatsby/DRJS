@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader.js";
 import Message from "../components/Message.js";
 import FormContainer from "../components/FormContainer.js";
-import { register } from "../actions/userActions.js";
+import {
+  fetchUserInfo,
+  register,
+  USER_REGISTER_RESET,
+} from "../actions/userActions.js";
 
 function RegisterScreen() {
   const [firstname, setFirstname] = useState("");
@@ -25,13 +29,17 @@ function RegisterScreen() {
 
   const loc_redirect = location.search && location.search.split("=")[1];
 
-  const { error, loading, access } = userRegister;
+  const { error, loading, fullfilled } = userRegister;
 
   useEffect(() => {
-    if (access) {
+    if (fullfilled) {
+      dispatch({
+        type: USER_REGISTER_RESET,
+      });
+      dispatch(fetchUserInfo());
       navigate(`/${loc_redirect}`);
     }
-  }, [navigate, access, loc_redirect]);
+  }, [fullfilled, loc_redirect, navigate, dispatch]);
 
   const resetForm = () => {
     setFirstname("");

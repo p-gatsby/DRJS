@@ -26,13 +26,13 @@ function PlaceOrderScreen() {
     Number(taxPrice)
   ).toFixed(2);
 
-  const { order, error, success } = useSelector((state) => state.orderCreate);
+  const { order, error, fullfilled } = useSelector((state) => state.orderCreate);
 
   useEffect(() => {
     if (!access) {
       navigate("/login?redirect=placeorder");
     }
-    if (success) {
+    if (fullfilled) {
       navigate(`/order/${order.id}`);
       dispatch({
         type: ORDER_CREATE_RESET,

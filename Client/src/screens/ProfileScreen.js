@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Table } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader.js";
 import Message from "../components/Message.js";
 import FormContainer from "../components/FormContainer.js";
 import {
+  fetchUserInfo,
   updateUserProfile,
   USER_UPDATE_PROFILE_RESET,
 } from "../actions/userActions.js";
+import { fetchUserOrders } from "../actions/orderActions.js";
 
 function ProfileScreen() {
   const dispatch = useDispatch();
@@ -17,9 +20,15 @@ function ProfileScreen() {
 
   const { user } = useSelector((state) => state.userInfo);
 
-  const { loading, success, error } = useSelector(
+  const { loading, fullfilled, error } = useSelector(
     (state) => state.userUpdateProfile
   );
+
+  const {
+    loading: loadingOrders,
+    error: errorOrders,
+    orders,
+  } = useSelector((state) => state.userOrders);
 
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -30,20 +39,22 @@ function ProfileScreen() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (user == null) {
+    if (!user) {
       navigate("/login");
     } else {
-      if (success) {
+      if (fullfilled) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
+        dispatch(fetchUserInfo());
         setPassword("");
         setCheckPassword("");
       }
+      dispatch(fetchUserOrders());
       setFirstname(user.first_name);
       setLastname(user.last_name);
       setUsername(user.username);
       setEmail(user.email);
     }
-  }, [dispatch, user, success, navigate]);
+  }, [user, fullfilled, navigate, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -146,6 +157,46 @@ function ProfileScreen() {
       </Col>
       <Col xs={12} md={8}>
         <h1>My Orders</h1>
+        {orders.length === 0 ? (
+          <Message variant="info">You have no orders</Message>
+        ) : loadingOrders ? (
+          <Loader />
+        ) : errorOrders ? (
+          <Message variant="danger">{errorOrders}</Message>
+        ) : (
+          <Table striped responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order.id}>
+                  <td>{order.id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>{order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? (
+                      order.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/order/${order.id}`}>
+                      <Button className="btn-sm">View Order</Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Col>
     </Row>
   );

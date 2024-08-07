@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader.js";
 import Message from "../components/Message.js";
 import FormContainer from "../components/FormContainer.js";
-import { login } from "../actions/userActions.js";
+import { fetchUserInfo, login } from "../actions/userActions.js";
 
 function LoginScreen() {
   const [username, setUsername] = useState("");
@@ -25,9 +25,10 @@ function LoginScreen() {
 
   useEffect(() => {
     if (access) {
+      dispatch(fetchUserInfo());
       navigate(`/${loc_redirect}`);
     }
-  }, [navigate, location, access, loc_redirect]);
+  }, [access, loc_redirect, navigate, dispatch]);
 
   const resetForm = () => {
     setUsername("");
